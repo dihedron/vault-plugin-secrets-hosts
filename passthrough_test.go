@@ -11,20 +11,6 @@ import (
 	"github.com/hashicorp/vault/sdk/logical"
 )
 
-func testPassthroughBackendWithStorage() (logical.Backend, logical.Storage) {
-	storage := &logical.InmemStorage{}
-	b, _ := PassthroughBackendFactory(context.Background(), &logical.BackendConfig{
-		Logger: nil,
-		System: logical.StaticSystemView{
-			DefaultLeaseTTLVal: time.Hour * 24,
-			MaxLeaseTTLVal:     time.Hour * 24 * 32,
-		},
-		StorageView: storage,
-	})
-
-	return b, storage
-}
-
 func TestPassthroughBackend_RootPaths(t *testing.T) {
 	b := testPassthroughBackend()
 	test := func(b logical.Backend) {
@@ -70,11 +56,11 @@ func TestPassthroughBackend_Read(t *testing.T) {
 		req := logical.TestRequest(t, logical.UpdateOperation, "foo")
 		req.Data["raw"] = "test"
 		var reqTTL interface{}
-		switch ttl.(type) {
+		switch ttl := ttl.(type) {
 		case int64:
-			reqTTL = ttl.(int64)
+			reqTTL = ttl
 		case string:
-			reqTTL = ttl.(string)
+			reqTTL = ttl
 		default:
 			t.Fatal("unknown ttl type")
 		}
@@ -212,10 +198,10 @@ func TestPassthroughBackend_List(t *testing.T) {
 
 func TestPassthroughBackend_Revoke(t *testing.T) {
 	test := func(b logical.Backend) {
-		req := logical.TestRequest(t, logical.RevokeOperation, "kv")
+		req := logical.TestRequest(t, logical.RevokeOperation, "host")
 		req.Secret = &logical.Secret{
 			InternalData: map[string]interface{}{
-				"secret_type": "kv",
+				"secret_type": "host",
 			},
 		}
 

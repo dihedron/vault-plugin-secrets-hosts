@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-TOOL=vault-plugin-secrets-kv
+TOOL=vault-plugin-secrets-hosts
 #
 # This script builds the application from source for multiple platforms.
 set -e
@@ -23,7 +23,8 @@ GIT_DIRTY="$(test -n "`git status --porcelain`" && echo "+CHANGES" || true)"
 # Determine the arch/os combos we're building for
 XC_ARCH=${XC_ARCH:-"386 amd64"}
 XC_OS=${XC_OS:-linux darwin windows freebsd openbsd netbsd solaris}
-XC_OSARCH=${XC_OSARCH:-"linux/386 linux/amd64 linux/arm linux/arm64 darwin/386 darwin/amd64 windows/386 windows/amd64 freebsd/386 freebsd/amd64 freebsd/arm openbsd/386 openbsd/amd64 openbsd/arm netbsd/386 netbsd/amd64 netbsd/arm solaris/amd64"}
+#XC_OSARCH=${XC_OSARCH:-"linux/386 linux/amd64 linux/arm linux/arm64 darwin/386 darwin/amd64 windows/386 windows/amd64 freebsd/386 freebsd/amd64 freebsd/arm openbsd/386 openbsd/amd64 openbsd/arm netbsd/386 netbsd/amd64 netbsd/arm solaris/amd64"}
+XC_OSARCH=${XC_OSARCH:-"linux/amd64"}
 
 GOPATH=${GOPATH:-$(go env GOPATH)}
 case $(uname) in

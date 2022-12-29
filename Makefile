@@ -1,4 +1,4 @@
-TOOL?=vault-plugin-secrets-kv
+TOOL?=vault-plugin-secrets-hosts
 TEST?=$$(go list ./... | grep -v /vendor/)
 VETARGS?=-asmdecl -atomic -bool -buildtags -copylocks -methods -nilfunc -printf -rangeloops -shift -structtags -unsafeptr
 EXTERNAL_TOOLS=\
@@ -49,3 +49,35 @@ proto:
 	protoc --go_out=. --go_opt=paths=source_relative *.proto
 
 .PHONY: bin default generate test vet bootstrap fmt fmtcheck
+
+#
+# CUSTOM
+#
+
+.PHONY: clean
+clean:
+	@rm -rf pkg bin
+
+# compute the plugin's SHA-256 sum
+.PHONY: shasum
+shasum: bin
+	$(eval SHA256=$(shell sha256sum bin/vault-plugin-secrets-hosts | cut -d ' ' -f1))
+	@echo "plugin's SHA-256 sum is $(SHA256)"
+
+# register the plugin to vault (using its SHA-256 sum)
+.PHONY: register
+register: bin
+	@mkdir -p _tests/data/plugins/
+	$(eval SHA256=$(shell sha256sum bin/vault-plugin-secrets-hosts | cut -d ' ' -f1))
+	@mv bin/vault-plugin-secrets-hosts _tests/data/plugins/	
+	@vault plugin register -sha256=$(SHA256) secret vault-plugin-secrets-hosts
+
+# enable the registered plugin as a secrets engine in vault
+.PHONY: enable
+enable: register # maybe add disable first?
+	@vault secrets enable -path=hosts vault-plugin-secrets-hosts
+
+# enable the registered plugin as a secrets engine in vault
+.PHONY: disable
+disable:
+	@vault secrets disable hosts

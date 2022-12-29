@@ -51,7 +51,7 @@ func LeaseSwitchedPassthroughBackend(ctx context.Context, conf *logical.BackendC
 		},
 
 		Paths: []*framework.Path{
-			&framework.Path{
+			{
 				Pattern: framework.MatchAllRegex("path"),
 
 				Fields: map[string]*framework.FieldSchema{
@@ -76,8 +76,8 @@ func LeaseSwitchedPassthroughBackend(ctx context.Context, conf *logical.BackendC
 			},
 		},
 		Secrets: []*framework.Secret{
-			&framework.Secret{
-				Type: "kv",
+			{
+				Type: "host",
 
 				Renew: b.handleRead(),
 				Revoke: func(ctx context.Context, req *logical.Request, data *framework.FieldData) (*logical.Response, error) {
@@ -89,7 +89,7 @@ func LeaseSwitchedPassthroughBackend(ctx context.Context, conf *logical.BackendC
 	}
 
 	if conf == nil {
-		return nil, fmt.Errorf("Configuation passed into backend is nil")
+		return nil, fmt.Errorf("configuration passed into backend is nil")
 	}
 	backend.Setup(ctx, conf)
 	b.Backend = backend
@@ -144,7 +144,7 @@ func (b *PassthroughBackend) handleRead() framework.OperationFunc {
 		var resp *logical.Response
 		if b.generateLeases {
 			// Generate the response
-			resp = b.Secret("kv").Response(rawData, nil)
+			resp = b.Secret("host").Response(rawData, nil)
 			resp.Secret.Renewable = false
 		} else {
 			resp = &logical.Response{
@@ -255,7 +255,7 @@ func (b *PassthroughBackend) handleList() framework.OperationFunc {
 }
 
 const passthroughHelp = `
-The kv backend reads and writes arbitrary secrets to the backend.
+The hosts backend reads and writes arbitrary secrets to the backend.
 The secrets are encrypted/decrypted by Vault: they are never stored
 unencrypted in the backend and the backend never has an opportunity to
 see the unencrypted value.

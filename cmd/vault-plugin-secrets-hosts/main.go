@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
+	kv "github.com/dihedron/vault-plugin-secrets-hosts"
 	hclog "github.com/hashicorp/go-hclog"
-	kv "github.com/hashicorp/vault-plugin-secrets-kv"
 	"github.com/hashicorp/vault/api"
 	"github.com/hashicorp/vault/sdk/plugin"
 )
@@ -14,6 +14,8 @@ func main() {
 	flags := apiClientMeta.FlagSet()
 	flags.Parse(os.Args[1:])
 
+	logger := hclog.New(&hclog.LoggerOptions{})
+
 	tlsConfig := apiClientMeta.GetTLSConfig()
 	tlsProviderFunc := api.VaultPluginTLSProvider(tlsConfig)
 
@@ -22,9 +24,8 @@ func main() {
 		TLSProviderFunc:    tlsProviderFunc,
 	})
 	if err != nil {
-		logger := hclog.New(&hclog.LoggerOptions{})
-
 		logger.Error("plugin shutting down", "error", err)
 		os.Exit(1)
 	}
+	logger.Info("plugin started")
 }

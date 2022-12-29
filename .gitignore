@@ -56,3 +56,6 @@ tags
 *.ipr
 *.iml
 
+# local tests
+_tests/data
+!_tests/config.hcl

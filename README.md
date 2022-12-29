@@ -1,4 +1,4 @@
-# Vault Plugin: Key-Value Secrets Backend [![Build Status](https://travis-ci.org/hashicorp/vault-plugin-secrets-kv.svg?branch=master)](https://travis-ci.org/hashicorp/vault-plugin-secrets-kv)
+# Vault Plugin: Key-Value Secrets Backend [![Build Status](https://travis-ci.org/dihedron/vault-plugin-secrets-hosts.svg?branch=master)](https://travis-ci.org/dihedron/vault-plugin-secrets-hosts)
 
 This is a standalone backend plugin for use with [Hashicorp Vault](https://www.github.com/hashicorp/vault).
 This plugin provides Key-Value functionality to Vault.
@@ -45,7 +45,7 @@ If you wish to work on this plugin, you'll first need
 For local dev first make sure Go is properly installed, including
 setting up a [GOPATH](https://golang.org/doc/code.html#GOPATH).
 Next, clone this repository into
-`$GOPATH/src/github.com/hashicorp/vault-plugin-secrets-kv`.
+`$GOPATH/src/github.com/dihedron/vault-plugin-secrets-hosts`.
 You can then download any required build tools by bootstrapping your
 environment:
 
@@ -67,7 +67,7 @@ in Vault. You can add a temporary `replace` declaration in your local Vault chec
 go.mod (above the `require` declarations), such as:
 
 ```
-replace github.com/hashicorp/vault-plugin-secrets-kv => /path/to/your/project/vault-plugin-secrets-kv
+replace github.com/dihedron/vault-plugin-secrets-hosts => /path/to/your/project/vault-plugin-secrets-hosts
 ```
 
 Alternatively, you could go through the plugin process. To do this,
@@ -92,7 +92,7 @@ Once the server is started, register the plugin in the Vault server's [plugin ca
 ```sh
 $ vault write sys/plugins/catalog/kv \
         sha_256=<expected SHA256 Hex value of the plugin binary> \
-        command="vault-plugin-secrets-kv"
+        command="vault-plugin-secrets-hosts"
 ...
 Success! Data written to: sys/plugins/catalog/kv
 ```
@@ -101,9 +101,9 @@ Note you should generate a new sha256 checksum if you have made changes
 to the plugin. Example using openssl:
 
 ```sh
-openssl dgst -sha256 $GOPATH/vault-plugin-secrets-kv
+openssl dgst -sha256 $GOPATH/vault-plugin-secrets-hosts
 ...
-SHA256(.../go/bin/vault-plugin-secrets-kv)= 896c13c0f5305daed381952a128322e02bc28a57d0c862a78cbc2ea66e8c6fa1
+SHA256(.../go/bin/vault-plugin-secrets-hosts)= 896c13c0f5305daed381952a128322e02bc28a57d0c862a78cbc2ea66e8c6fa1
 ```
 
 Enable the auth plugin backend using the secrets enable plugin command:
